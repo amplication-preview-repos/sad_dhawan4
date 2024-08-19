@@ -1,0 +1,66 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Student {
+  createdAt DateTime  @default(now())
+  email     String?
+  grade     Int?
+  id        String    @id @default(cuid())
+  name      String?
+  sessions  Session[]
+  updatedAt DateTime  @updatedAt
+}
+
+model Mentor {
+  createdAt DateTime  @default(now())
+  email     String?
+  id        String    @id @default(cuid())
+  name      String?
+  sessions  Session[]
+  specialty String?
+  updatedAt DateTime  @updatedAt
+}
+
+model Pathway {
+  createdAt   DateTime               @default(now())
+  description String?
+  difficulty  EnumPathwayDifficulty?
+  id          String                 @id @default(cuid())
+  title       String?
+  updatedAt   DateTime               @updatedAt
+}
+
+model Session {
+  createdAt DateTime  @default(now())
+  date      DateTime?
+  duration  Int?
+  id        String    @id @default(cuid())
+  mentor    Mentor?   @relation(fields: [mentorId], references: [id])
+  mentorId  String?
+  student   Student?  @relation(fields: [studentId], references: [id])
+  studentId String?
+  summary   String?
+  updatedAt DateTime  @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+enum EnumPathwayDifficulty {
+  Option1
+}
